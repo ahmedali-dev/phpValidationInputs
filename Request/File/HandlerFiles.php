@@ -9,15 +9,22 @@ class HandlerFiles extends Files
 
     protected int $fileSize = 1048576;
 
-    public function Validation(): void
+    public function __construct($method, $rules)
     {
-        $this->init();
-        if (!$this->Required()):
-            $this->min();
-            $this->max();
-            $this->isAllowExtension();
-        endif;
+        parent::__construct($method, $rules);
 
+        if (!$this->CheckRequestMethod()) {
+            throw new Exception("Request Method not Match");
+            return;
+        }
+
+        $this->init();
+//        if (!$this->Required()):
+        $this->min();
+        $this->max();
+        $this->isAllowExtension();
+        $this->Required();
+//        endif;
     }
 
     private function RuleFilterValue($rules, $search): string|bool
@@ -48,19 +55,21 @@ class HandlerFiles extends Files
     public function Required(): bool
     {
 
+        $status = false;
         foreach ($this->required as $item => $rule) {
             $rq = $this->RuleFilterValue($rule, "required");
 
-            echo $rq . br;
-            if ($rq !== false) {
+
+            if ($rq) {
+                echo $item . br;
                 $this->setError($item, "request {$item} is required");
-                return true;
+                $status = true;
+                continue;
             }
-            echo 'error' . br;
-            return false;
+            $status = false;
         }
 
-        return false;
+        return $status;
     }
 
     public function min(): void

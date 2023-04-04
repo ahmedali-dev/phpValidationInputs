@@ -71,6 +71,11 @@ class Input
         $this->init();
     }
 
+    protected function CheckRequestMethod(): bool
+    {
+        return $_SERVER['REQUEST_METHOD'] === strtoupper($this->method);
+    }
+
     protected function getRequestType(): bool
     {
         if (!empty($_REQUEST)) {

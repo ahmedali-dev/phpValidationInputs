@@ -17,6 +17,11 @@ class Files
 
     }
 
+    protected function CheckRequestMethod(): bool
+    {
+        return $_SERVER['REQUEST_METHOD'] === strtoupper($this->method);
+    }
+
 
     protected function init(): void
     {
